@@ -248,27 +248,40 @@ export default function Boss() {
     const dz = THREE.MathUtils.clamp(hit.z + dragState.offset.z, -5, 8);
 
     const pos = safeBodyVec3(body, 'translation');
-    const vel = safeBodyVec3(body, 'linvel');
-    if (!pos || !vel) {
+    if (!pos) {
       // Stale wasm handle (boss remounted). Drop it cleanly.
       dragState.body = null;
       setIsDragging(false);
       return;
     }
-    if (isNaN(pos.x) || isNaN(vel.x)) return;
+    if (isNaN(pos.x)) return;
 
-    const stiffness = 45;
-    const damping = 6;
+    // Drag is now a velocity P-controller rather than an impulse spring. We
+    // compute the velocity needed to close the position error in roughly
+    // 1/responsiveness seconds and assign it directly to the rigid body. This
+    // bypasses mass + linearDamping interactions that previously made the
+    // boss feel sluggish (combined effective mass with joints ≈ 21, plus
+    // rapier's per-step damping was eating most of the impulse).
+    //
+    // A `maxSpeed` cap keeps fast cursor flicks from yanking joints into
+    // explosion territory; the rest of the body still tracks the torso
+    // through the spherical/revolute joints with its own physics.
+    const responsiveness = 30;
+    const maxSpeed = 60;
+
+    let vx = (dx - pos.x) * responsiveness;
+    let vy = (dy - pos.y) * responsiveness;
+    let vz = (dz - pos.z) * responsiveness;
+    const speed = Math.hypot(vx, vy, vz);
+    if (speed > maxSpeed) {
+      const k = maxSpeed / speed;
+      vx *= k;
+      vy *= k;
+      vz *= k;
+    }
 
     try {
-      body.applyImpulse(
-        {
-          x: (dx - pos.x) * stiffness - vel.x * damping,
-          y: (dy - pos.y) * stiffness - vel.y * damping,
-          z: (dz - pos.z) * stiffness - vel.z * damping,
-        },
-        true,
-      );
+      body.setLinvel({ x: vx, y: vy, z: vz }, true);
       body.setAngvel({ x: 0, y: 0, z: 0 }, true);
       body.wakeUp();
     } catch {
