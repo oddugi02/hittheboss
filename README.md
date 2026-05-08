@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Beat the Boss 4
 
-## Getting Started
+A 3D stress-relief game built with Next.js, React Three Fiber, and Rapier
+physics. Drag the boss around, hurl weapons, build combos, customize the
+boss's appearance, and unlock the full weapon roster.
 
-First, run the development server:
+## Features
+
+- **14 unlockable weapons** (Macaron → Desk), each with its own throw arc and
+  sound. Coin payout per hit ramps from 5 → 20 across stages, so bigger fights
+  pay better.
+- **Combo system** with critical hits (5-10% chance, 1.5x damage, boss flashes
+  red) and milestone effects at 10 / 25 / 50 / 100 combos (screen shake,
+  full-screen tinted bursts, "FIRE / BLAZING / INFERNO / GOD-LIKE" text).
+- **Boss patterns**: guard, rage, evade, frozen / stun reactions, scaled
+  defense by stage.
+- **Daily quests** + random stage events (Coin Rush, Glass Boss, Iron Boss,
+  Time Attack) and 10+ achievements.
+- **Deep boss customization** across 5 tabs (Body / Face / Hair / Outfit /
+  Data): body type, height, skin/eye/hair color, hair styles, hats (cap,
+  crown, top hat, beanie, party hat, horns, halo), facial hair, eyebrows,
+  mouth, nose, face accessories (eyepatch, mask, scar, mole, bandage),
+  outfits (suit, casual, hoodie, tracksuit, royal). Includes a 🎲 SURPRISE ME
+  randomizer + named presets + base64 share codes.
+- **Local progression persistence** via Zustand `persist` (with versioned
+  migration so older saves merge cleanly when new appearance fields ship).
+- **Optional cloud sync** + anonymous auth via Supabase.
+- **PNG screenshot export** that composites the WebGL canvas with the boss's
+  HTML name tag, plus a sound toggle / master volume slider.
+- **Headless render endpoint** at `/render-boss?seed=...` used by the
+  companion archive site (see below) to generate deterministic previews.
+
+## Local Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Optional: Enable Cloud Sync (Free)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Cloud is fully optional. Without it the game runs entirely offline using
+`localStorage`. To enable cross-device save:
 
-## Learn More
+1. Create a free Supabase project ([supabase.com](https://supabase.com)).
+2. In the Supabase SQL editor, run
+   [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql)
+   then [`002_drop_weapon_levels.sql`](supabase/migrations/002_drop_weapon_levels.sql).
+3. In Supabase Auth → Providers → enable **Anonymous Sign-Ins**.
+4. Copy `.env.local.example` to `.env.local` and fill in:
 
-To learn more about Next.js, take a look at the following resources:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Restart `npm run dev`. If env vars are missing, the cloud layer no-ops and
+   the in-game cloud notice explains it.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Companion Archive
 
-## Deploy on Vercel
+A separate Next.js project that catalogs randomly-generated bosses as PNGs by
+scraping `/render-boss?seed=...` with Playwright. Useful for showcasing
+customization variety. Repo: `boss-archive`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router, Turbopack) + React 19
+- Three.js via `@react-three/fiber`, `@react-three/drei`, `@react-three/rapier`
+- Zustand 5 (with versioned `persist` migration)
+- Web Audio API for SFX (programmatic, no audio assets shipped)
+- Supabase (optional)
