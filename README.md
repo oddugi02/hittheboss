@@ -25,6 +25,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## GitHub Pages (same app as `localhost:3000`)
+
+The page that shows **README** on `github.com/your-name/your-repo` is only the
+repository viewer. The playable build is a **separate URL** after Pages deploys.
+
+1. Push this repo (including `.github/workflows/pages.yml`) to GitHub.
+2. Repo **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
+3. Open the **Pages** URL from the workflow run (or use the pattern below).
+
+**URL pattern**
+
+- Normal repo: `https://<your-username>.github.io/<repo-name>/` (include the trailing slash).
+- Special `username.github.io` repo: `https://<your-username>.github.io/`
+
+The workflow builds a static export (`out/`) so the live site matches the production
+build of the same Next.js app you run locally.
+
 ## Optional: Enable Cloud Features (Free)
 
 Cloud is fully optional. Without it the game runs entirely offline using
