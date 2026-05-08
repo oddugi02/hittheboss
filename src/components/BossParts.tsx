@@ -504,8 +504,8 @@ export function OutfitMesh({
               <meshStandardMaterial color={shirtColor} roughness={0.85} />
             </mesh>
           )}
-          {/* casual round neckline */}
-          <mesh position={[0, 0.5, 0.35]}>
+          {/* casual round neckline — at z=0.39 so the torus ring sits clearly in front of the shirt face (0.35 male / 0.31 female) */}
+          <mesh position={[0, 0.5, 0.39]}>
             <torusGeometry args={[0.18, 0.04, 8, 16, Math.PI]} />
             <meshStandardMaterial color={shirtColor} roughness={0.9} />
           </mesh>
@@ -518,9 +518,9 @@ export function OutfitMesh({
             <boxGeometry args={[1.1, 1.2, 0.7]} />
             <meshStandardMaterial color={shirtColor} roughness={0.85} />
           </mesh>
-          {/* zipper */}
-          <mesh position={[0, 0, 0.36]}>
-            <boxGeometry args={[0.04, 1.0, 0.02]} />
+          {/* zipper — pushed to z=0.38 so its back face clears the shirt front (0.35) */}
+          <mesh position={[0, 0, 0.38]}>
+            <boxGeometry args={[0.04, 1.0, 0.04]} />
             <meshStandardMaterial color="#cccccc" metalness={0.8} roughness={0.3} />
           </mesh>
           {/* side stripes */}
@@ -541,18 +541,18 @@ export function OutfitMesh({
             <boxGeometry args={[1.15, 1.25, 0.72]} />
             <meshStandardMaterial color={shirtColor} roughness={0.95} />
           </mesh>
-          {/* front pocket */}
-          <mesh position={[0, -0.15, 0.36]}>
+          {/* front pocket — at z=0.39 so its back face (0.37) clears shirt front (0.36 for the slightly larger hoodie box) */}
+          <mesh position={[0, -0.15, 0.39]}>
             <boxGeometry args={[0.7, 0.35, 0.04]} />
             <meshStandardMaterial color={shirtColor} roughness={1} />
           </mesh>
           {/* drawstrings */}
-          <mesh position={[-0.08, 0.55, 0.36]}>
-            <cylinderGeometry args={[0.018, 0.018, 0.25, 6]} />
+          <mesh position={[-0.08, 0.55, 0.4]}>
+            <cylinderGeometry args={[0.022, 0.022, 0.25, 8]} />
             <meshStandardMaterial color="#ffffff" />
           </mesh>
-          <mesh position={[0.08, 0.55, 0.36]}>
-            <cylinderGeometry args={[0.018, 0.018, 0.25, 6]} />
+          <mesh position={[0.08, 0.55, 0.4]}>
+            <cylinderGeometry args={[0.022, 0.022, 0.25, 8]} />
             <meshStandardMaterial color="#ffffff" />
           </mesh>
         </>
@@ -564,9 +564,9 @@ export function OutfitMesh({
             <boxGeometry args={[1.1, 1.2, 0.7]} />
             <meshStandardMaterial color={shirtColor} roughness={0.7} metalness={0.15} />
           </mesh>
-          {/* gold trim down the middle */}
-          <mesh position={[0, 0, 0.36]}>
-            <boxGeometry args={[0.12, 1.1, 0.02]} />
+          {/* gold trim down the middle — at z=0.38 so its back face (0.36) clears shirt front (0.35) */}
+          <mesh position={[0, 0, 0.38]}>
+            <boxGeometry args={[0.12, 1.1, 0.04]} />
             <meshStandardMaterial color="#ffd700" metalness={0.7} roughness={0.3} />
           </mesh>
           {/* shoulder epaulettes */}
@@ -606,32 +606,40 @@ export function OutfitMesh({
               <meshStandardMaterial color={shirtColor} roughness={0.85} />
             </mesh>
           )}
+          {/*
+           * Ties / collar use thin boxes (not planes) and sit ≥0.05 in front of
+           * the shirt face. Planes had ~0.01 of clearance from the shirt,
+           * causing depth-precision flicker (z-fighting) on every frame.
+           * Box geometry adds real thickness, kills the coincident-face issue,
+           * and lets us drop side={DoubleSide}.
+           */}
           {showTie && appearance.tieStyle === 'long' && (
-            <mesh position={[0, 0, 0.36]}>
-              <planeGeometry args={[0.18, 0.9]} />
-              <meshStandardMaterial color={appearance.tieColor || '#e63946'} roughness={0.8} side={2} />
+            <mesh position={[0, 0, 0.4]}>
+              <boxGeometry args={[0.18, 0.9, 0.04]} />
+              <meshStandardMaterial color={appearance.tieColor || '#e63946'} roughness={0.8} />
             </mesh>
           )}
           {showTie && appearance.tieStyle === 'bowtie' && (
-            <group position={[0, 0.35, 0.36]}>
+            <group position={[0, 0.35, 0.4]}>
               <mesh position={[-0.1, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
-                <planeGeometry args={[0.15, 0.15]} />
-                <meshStandardMaterial color={appearance.tieColor || '#e63946'} side={2} />
+                <boxGeometry args={[0.18, 0.18, 0.04]} />
+                <meshStandardMaterial color={appearance.tieColor || '#e63946'} roughness={0.8} />
               </mesh>
               <mesh position={[0.1, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
-                <planeGeometry args={[0.15, 0.15]} />
-                <meshStandardMaterial color={appearance.tieColor || '#e63946'} side={2} />
+                <boxGeometry args={[0.18, 0.18, 0.04]} />
+                <meshStandardMaterial color={appearance.tieColor || '#e63946'} roughness={0.8} />
               </mesh>
-              <mesh position={[0, 0, 0.01]}>
-                <planeGeometry args={[0.08, 0.08]} />
-                <meshStandardMaterial color={appearance.tieColor || '#e63946'} side={2} />
+              {/* knot — slightly forward of the wings to read as a 3D bow */}
+              <mesh position={[0, 0, 0.03]}>
+                <boxGeometry args={[0.1, 0.1, 0.05]} />
+                <meshStandardMaterial color={appearance.tieColor || '#e63946'} roughness={0.8} />
               </mesh>
             </group>
           )}
           {showCollar && (
-            <mesh position={[0, 0.45, 0.36]}>
-              <planeGeometry args={[0.45, 0.15]} />
-              <meshStandardMaterial color="#ffffff" roughness={0.8} side={2} />
+            <mesh position={[0, 0.45, 0.4]}>
+              <boxGeometry args={[0.45, 0.15, 0.04]} />
+              <meshStandardMaterial color="#ffffff" roughness={0.8} />
             </mesh>
           )}
         </>
