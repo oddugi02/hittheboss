@@ -178,6 +178,7 @@ interface GameState {
   toggleSoundMuted: () => void;
   setSoundVolume: (volume: number) => void;
   randomizeAppearance: () => void;
+  resetAppearance: () => void;
   consumeComboMilestone: () => void;
 
   // Quests / achievements
@@ -715,6 +716,11 @@ export const useGameStore = create<GameState>()(
       // alone so the player doesn't lose their typed-in name on a shuffle.
       randomizeAppearance: () =>
         set((state) => ({ appearance: { ...rollRandomAppearance(state.appearance.name) } })),
+
+      // Restores the boss to the default look. The user-typed name is
+      // preserved (mirroring randomizeAppearance) — only visuals reset.
+      resetAppearance: () =>
+        set((state) => ({ appearance: { ...baseAppearance, name: state.appearance.name } })),
 
       consumeComboMilestone: () => set({ comboMilestone: null }),
 

@@ -41,6 +41,15 @@ export default function CustomizationMenu() {
   const loadPreset = useGameStore((s) => s.loadPreset);
   const deletePreset = useGameStore((s) => s.deletePreset);
   const randomizeAppearance = useGameStore((s) => s.randomizeAppearance);
+  const resetAppearance = useGameStore((s) => s.resetAppearance);
+
+  const handleResetAppearance = useCallback(() => {
+    if (typeof window === 'undefined' || window.confirm('외형을 기본값으로 되돌리시겠습니까?\n(이름은 유지됩니다)')) {
+      resetAppearance();
+      setShareStatus({ msg: '기본 외형으로 되돌렸습니다 ✓', tone: 'ok' });
+      setTimeout(() => setShareStatus(null), 2500);
+    }
+  }, [resetAppearance]);
 
   const exportShareCode = useCallback(async () => {
     const code = encodeAppearance(appearance);
@@ -242,6 +251,21 @@ export default function CustomizationMenu() {
               }}
             >
               🎲 SURPRISE ME!
+            </button>
+            <button
+              onClick={handleResetAppearance}
+              title="외형을 기본값으로 되돌리기 (이름은 유지)"
+              style={{
+                background: 'linear-gradient(180deg,#9e9e9e,#424242)',
+                color: 'white', border: '4px solid #111', borderRadius: '12px',
+                padding: '0 14px', height: '40px', fontSize: '14px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: '4px', boxShadow: '2px 2px 0 #000',
+                fontFamily: 'inherit', textShadow: '1px 1px 0 #000',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ↺ RESET
             </button>
             <button onClick={takeScreenshot} style={{
               background: '#2196f3', color: 'white', border: '4px solid #111', borderRadius: '50%',
