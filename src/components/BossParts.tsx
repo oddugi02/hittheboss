@@ -141,15 +141,19 @@ export function HatMesh({ appearance }: { appearance: BossAppearance }) {
         </group>
       );
     case 'horns':
+      // The horns must protrude above the tallest hair silhouettes
+      // (long ≈ y 0.93, bun ≈ y 1.10). Group is lifted, mesh anchors raised
+      // and cones lengthened so tips reach world y ≈ 1.4 with bases sitting
+      // visibly above the head/hair scalp at y ≈ 0.7.
       return (
-        <group position={[0, 0.5, 0]}>
-          <mesh position={[-0.32, 0.25, 0]} rotation={[0, 0, -0.35]}>
-            <coneGeometry args={[0.1, 0.5, 12]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
+        <group position={[0, 0.6, 0]}>
+          <mesh position={[-0.34, 0.5, 0]} rotation={[0, 0, -0.35]}>
+            <coneGeometry args={[0.13, 0.7, 12]} />
+            <meshStandardMaterial color={color === '#f44336' ? '#1a1a1a' : color} roughness={0.4} />
           </mesh>
-          <mesh position={[0.32, 0.25, 0]} rotation={[0, 0, 0.35]}>
-            <coneGeometry args={[0.1, 0.5, 12]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
+          <mesh position={[0.34, 0.5, 0]} rotation={[0, 0, 0.35]}>
+            <coneGeometry args={[0.13, 0.7, 12]} />
+            <meshStandardMaterial color={color === '#f44336' ? '#1a1a1a' : color} roughness={0.4} />
           </mesh>
         </group>
       );

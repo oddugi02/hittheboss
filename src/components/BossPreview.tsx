@@ -93,20 +93,32 @@ export default function BossPreview({ showName = true }: { showName?: boolean })
         )}
         {appearance.hairStyle === 'spiky' && (
           <group>
-            <mesh position={[0, 0.25, 0]}>
-              <sphereGeometry args={[0.72, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2.5]} />
+            {/* Tighter scalp dome (top y ≈ 0.8) so spikes clearly poke above. */}
+            <mesh position={[0, 0.1, 0]}>
+              <sphereGeometry args={[0.7, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2.4]} />
               <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
             </mesh>
-            <mesh position={[0, 0.7, 0]} rotation={[0, 0, 0]}>
-              <coneGeometry args={[0.2, 0.4, 4]} />
+            {/* Center spike — tallest, tip at y ≈ 1.3 */}
+            <mesh position={[0, 0.95, 0]}>
+              <coneGeometry args={[0.18, 0.7, 4]} />
               <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
             </mesh>
-            <mesh position={[-0.3, 0.6, 0.2]} rotation={[0, 0, 0.4]}>
-              <coneGeometry args={[0.15, 0.3, 4]} />
+            {/* Front-left / front-right side spikes */}
+            <mesh position={[-0.3, 0.85, 0.25]} rotation={[0.15, 0, 0.5]}>
+              <coneGeometry args={[0.14, 0.6, 4]} />
               <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
             </mesh>
-            <mesh position={[0.3, 0.6, 0.2]} rotation={[0, 0, -0.4]}>
-              <coneGeometry args={[0.15, 0.3, 4]} />
+            <mesh position={[0.3, 0.85, 0.25]} rotation={[0.15, 0, -0.5]}>
+              <coneGeometry args={[0.14, 0.6, 4]} />
+              <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
+            </mesh>
+            {/* Back spikes for silhouette */}
+            <mesh position={[-0.28, 0.78, -0.25]} rotation={[-0.2, 0, 0.4]}>
+              <coneGeometry args={[0.12, 0.5, 4]} />
+              <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
+            </mesh>
+            <mesh position={[0.28, 0.78, -0.25]} rotation={[-0.2, 0, -0.4]}>
+              <coneGeometry args={[0.12, 0.5, 4]} />
               <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
             </mesh>
           </group>
