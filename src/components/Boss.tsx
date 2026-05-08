@@ -534,33 +534,21 @@ function HeadPart({
         </group>
       )}
       {appearance.hairStyle === 'spiky' && (
-        // Previous spiky cones topped out at y≈0.9 while the dome surface
-        // peaks at y≈0.97, so the spikes were buried inside the dome. The
-        // dome is shortened (Math.PI/2.6 cap) and every spike is raised so
-        // its tip sits clearly above the dome from any camera angle.
         <group>
-          <mesh position={[0, 0.2, 0]}>
-            <sphereGeometry args={[0.72, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2.6]} />
+          <mesh position={[0, 0.25, 0]}>
+            <sphereGeometry args={[0.72, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2.5]} />
             <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
           </mesh>
-          <mesh position={[0, 1.0, 0]}>
-            <coneGeometry args={[0.18, 0.6, 4]} />
+          <mesh position={[0, 0.7, 0]} rotation={[0, 0, 0]}>
+            <coneGeometry args={[0.2, 0.4, 4]} />
             <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
           </mesh>
-          <mesh position={[0, 0.85, 0.28]} rotation={[0.45, 0, 0]}>
-            <coneGeometry args={[0.14, 0.5, 4]} />
+          <mesh position={[-0.3, 0.6, 0.2]} rotation={[0, 0, 0.4]}>
+            <coneGeometry args={[0.15, 0.3, 4]} />
             <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
           </mesh>
-          <mesh position={[-0.34, 0.85, 0.05]} rotation={[0, 0, 0.55]}>
-            <coneGeometry args={[0.14, 0.5, 4]} />
-            <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
-          </mesh>
-          <mesh position={[0.34, 0.85, 0.05]} rotation={[0, 0, -0.55]}>
-            <coneGeometry args={[0.14, 0.5, 4]} />
-            <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
-          </mesh>
-          <mesh position={[0, 0.82, -0.28]} rotation={[-0.45, 0, 0]}>
-            <coneGeometry args={[0.13, 0.45, 4]} />
+          <mesh position={[0.3, 0.6, 0.2]} rotation={[0, 0, -0.4]}>
+            <coneGeometry args={[0.15, 0.3, 4]} />
             <meshStandardMaterial color={appearance.hairColor} roughness={0.9} />
           </mesh>
         </group>

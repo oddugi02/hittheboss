@@ -141,29 +141,15 @@ export function HatMesh({ appearance }: { appearance: BossAppearance }) {
         </group>
       );
     case 'horns':
-      // Horns must clear the tallest hair dome (top ≈ y=0.97 in head-local
-      // space) plus a small margin. We anchor the horn cones higher (group at
-      // y=0.55, cone center at 0.55), make them longer (height 0.85), and tilt
-      // outward so the tips arc to roughly y≈1.4 — well above any hair style.
       return (
-        <group position={[0, 0.55, 0]}>
-          <mesh position={[-0.34, 0.55, 0]} rotation={[0, 0, -0.45]}>
-            <coneGeometry args={[0.12, 0.85, 12]} />
+        <group position={[0, 0.5, 0]}>
+          <mesh position={[-0.32, 0.25, 0]} rotation={[0, 0, -0.35]}>
+            <coneGeometry args={[0.1, 0.5, 12]} />
             <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
           </mesh>
-          <mesh position={[0.34, 0.55, 0]} rotation={[0, 0, 0.45]}>
-            <coneGeometry args={[0.12, 0.85, 12]} />
+          <mesh position={[0.32, 0.25, 0]} rotation={[0, 0, 0.35]}>
+            <coneGeometry args={[0.1, 0.5, 12]} />
             <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
-          </mesh>
-          {/* dark roots so the horns read as embedded in the head when
-              combined with thick hair styles like long/bob */}
-          <mesh position={[-0.34, 0.18, 0]}>
-            <sphereGeometry args={[0.13, 12, 12]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.5} />
-          </mesh>
-          <mesh position={[0.34, 0.18, 0]}>
-            <sphereGeometry args={[0.13, 12, 12]} />
-            <meshStandardMaterial color="#1a1a1a" roughness={0.5} />
           </mesh>
         </group>
       );
